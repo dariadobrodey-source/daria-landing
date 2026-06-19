@@ -172,7 +172,7 @@
 
     .hero-stage {
       position: relative;
-      min-height: 9rem;
+      min-height: 13rem;
     }
 
     @media (min-width: 768px) {
@@ -387,10 +387,10 @@
 
         root.renderer.setClearColor(0xffffff, 0);
         root.renderer.setPixelRatio(window.devicePixelRatio || 1);
-        root.camera.position.set(0, 0, isMobile ? 500 : 400);
+        root.camera.position.set(0, 0, isMobile ? 430 : 400);
 
         var textAnimation = createTextAnimation();
-        textAnimation.position.y = isMobile ? -8 : -40;
+        textAnimation.position.y = isMobile ? -16 : -40;
         root.scene.add(textAnimation);
 
         var tl = new TimelineMax({
@@ -416,7 +416,7 @@
         var container = document.getElementById("three-container");
         var isMobile = container && container.clientWidth < 640;
         var geometry = generateTextGeometry("DARIA GROM", {
-          size: isMobile ? 34 : 48,
+          size: isMobile ? 44 : 48,
           height: 0,
           font: "droid sans",
           weight: "bold",
