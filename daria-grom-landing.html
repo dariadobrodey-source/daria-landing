@@ -383,10 +383,11 @@
         });
 
         var isMobile = container.clientWidth < 640;
+        var isTouchDevice = window.matchMedia("(pointer: coarse)").matches || "ontouchstart" in window;
 
         root.renderer.setClearColor(0xffffff, 0);
         root.renderer.setPixelRatio(window.devicePixelRatio || 1);
-        root.camera.position.set(0, 0, isMobile ? 720 : 400);
+        root.camera.position.set(0, 0, isMobile ? 500 : 400);
 
         var textAnimation = createTextAnimation();
         textAnimation.position.y = isMobile ? -8 : -40;
@@ -406,14 +407,16 @@
           0
         );
 
-        createTweenScrubber(tl);
+        if (!isTouchDevice) {
+          createTweenScrubber(tl);
+        }
       }
 
       function createTextAnimation() {
         var container = document.getElementById("three-container");
         var isMobile = container && container.clientWidth < 640;
         var geometry = generateTextGeometry("DARIA GROM", {
-          size: isMobile ? 16 : 48,
+          size: isMobile ? 34 : 48,
           height: 0,
           font: "droid sans",
           weight: "bold",
