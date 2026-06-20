@@ -167,54 +167,7 @@
       position: absolute;
       inset: 0;
       overflow: hidden;
-      background: linear-gradient(135deg, rgba(239, 244, 255, 0.96), rgba(255, 238, 247, 0.9) 52%, rgba(255, 246, 224, 0.94));
-    }
-
-    .hero-art::before,
-    .hero-art::after {
-      content: "";
-      position: absolute;
-      width: 48vw;
-      height: 48vw;
-      min-width: 320px;
-      min-height: 320px;
-      border-radius: 9999px;
-      filter: blur(64px);
-      opacity: 0.82;
-      pointer-events: none;
-      will-change: transform;
-    }
-
-    .hero-art::before {
-      top: -38%;
-      left: -10%;
-      background: radial-gradient(circle, rgba(119, 232, 199, 0.8) 0%, rgba(142, 170, 245, 0.58) 42%, rgba(255, 255, 255, 0) 72%);
-      animation: heroColorOne 10s infinite ease-in-out alternate;
-    }
-
-    .hero-art::after {
-      right: -12%;
-      bottom: -48%;
-      background: radial-gradient(circle, rgba(238, 126, 202, 0.72) 0%, rgba(250, 195, 84, 0.58) 45%, rgba(255, 255, 255, 0) 74%);
-      animation: heroColorTwo 12s infinite ease-in-out alternate;
-    }
-
-    @keyframes heroColorOne {
-      0% {
-        transform: translate3d(0, 0, 0) scale(1);
-      }
-      100% {
-        transform: translate3d(34vw, 18vh, 0) scale(1.12);
-      }
-    }
-
-    @keyframes heroColorTwo {
-      0% {
-        transform: translate3d(0, 0, 0) scale(1);
-      }
-      100% {
-        transform: translate3d(-30vw, -14vh, 0) scale(1.08);
-      }
+      background: linear-gradient(180deg, rgba(255, 255, 255, 1), rgba(250, 249, 245, 0.96));
     }
 
     .hero-stage {
@@ -240,13 +193,14 @@
       height: 100% !important;
       display: block;
       opacity: 0.9;
+      filter: drop-shadow(0 0 16px rgba(238, 126, 202, 0.24)) drop-shadow(0 0 18px rgba(119, 232, 199, 0.2)) drop-shadow(0 0 20px rgba(142, 170, 245, 0.18));
     }
 
     .hero-overlay {
       position: absolute;
       inset: 0;
       z-index: 2;
-      background: radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.02) 58%);
+      background: rgba(255, 255, 255, 0.02);
     }
   </style>
 </head>
@@ -475,7 +429,39 @@
         });
 
         THREE.BAS.Utils.separateFaces(geometry);
-        return new TextAnimation(geometry);
+
+        var group = new THREE.Group();
+        var layers = [
+          { color: 0x2a2630, opacity: 0.62, x: 0, y: 0, z: 4 },
+          { color: 0xee7eca, opacity: 0.48, x: isMobile ? -1.4 : -2.4, y: isMobile ? 0.8 : 1.6, z: 2 },
+          { color: 0x8eaaf5, opacity: 0.46, x: isMobile ? 1.4 : 2.6, y: isMobile ? 0.2 : 0.8, z: 1 },
+          { color: 0x77e8c7, opacity: 0.42, x: isMobile ? 0.8 : 1.8, y: isMobile ? -1.2 : -2.1, z: 0 },
+          { color: 0xfac354, opacity: 0.34, x: isMobile ? -0.8 : -1.6, y: isMobile ? -0.7 : -1.4, z: -1 }
+        ];
+
+        var animations = layers.map(function (layer) {
+          var animation = new TextAnimation(geometry, layer);
+          animation.position.set(layer.x, layer.y, layer.z);
+          group.add(animation);
+          return animation;
+        });
+
+        group.animationDuration = animations[0].animationDuration;
+        group._animationProgress = 0;
+
+        Object.defineProperty(group, "animationProgress", {
+          get: function () {
+            return this._animationProgress;
+          },
+          set: function (v) {
+            this._animationProgress = v;
+            animations.forEach(function (animation) {
+              animation.animationProgress = v;
+            });
+          }
+        });
+
+        return group;
       }
 
       function generateTextGeometry(text, params) {
@@ -498,7 +484,8 @@
         return geometry;
       }
 
-      function TextAnimation(textGeometry) {
+      function TextAnimation(textGeometry, options) {
+        options = options || {};
         var bufferGeometry = new THREE.BAS.ModelBufferGeometry(textGeometry);
         var aAnimation = bufferGeometry.createAttribute("aAnimation", 2);
         var aCentroid = bufferGeometry.createAttribute("aCentroid", 3);
@@ -605,9 +592,11 @@
             ]
           },
           {
-            diffuse: 0x2f2b35
+            diffuse: options.color || 0x2a2630
           }
         );
+        material.opacity = options.opacity || 1;
+        material.depthWrite = false;
 
         THREE.Mesh.call(this, bufferGeometry, material);
         this.frustumCulled = false;
