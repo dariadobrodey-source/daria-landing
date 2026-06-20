@@ -167,7 +167,54 @@
       position: absolute;
       inset: 0;
       overflow: hidden;
-      background: linear-gradient(180deg, rgba(250, 249, 245, 0.96), rgba(250, 249, 245, 0.92));
+      background: linear-gradient(135deg, rgba(239, 244, 255, 0.96), rgba(255, 238, 247, 0.9) 52%, rgba(255, 246, 224, 0.94));
+    }
+
+    .hero-art::before,
+    .hero-art::after {
+      content: "";
+      position: absolute;
+      width: 48vw;
+      height: 48vw;
+      min-width: 320px;
+      min-height: 320px;
+      border-radius: 9999px;
+      filter: blur(64px);
+      opacity: 0.82;
+      pointer-events: none;
+      will-change: transform;
+    }
+
+    .hero-art::before {
+      top: -38%;
+      left: -10%;
+      background: radial-gradient(circle, rgba(119, 232, 199, 0.8) 0%, rgba(142, 170, 245, 0.58) 42%, rgba(255, 255, 255, 0) 72%);
+      animation: heroColorOne 10s infinite ease-in-out alternate;
+    }
+
+    .hero-art::after {
+      right: -12%;
+      bottom: -48%;
+      background: radial-gradient(circle, rgba(238, 126, 202, 0.72) 0%, rgba(250, 195, 84, 0.58) 45%, rgba(255, 255, 255, 0) 74%);
+      animation: heroColorTwo 12s infinite ease-in-out alternate;
+    }
+
+    @keyframes heroColorOne {
+      0% {
+        transform: translate3d(0, 0, 0) scale(1);
+      }
+      100% {
+        transform: translate3d(34vw, 18vh, 0) scale(1.12);
+      }
+    }
+
+    @keyframes heroColorTwo {
+      0% {
+        transform: translate3d(0, 0, 0) scale(1);
+      }
+      100% {
+        transform: translate3d(-30vw, -14vh, 0) scale(1.08);
+      }
     }
 
     .hero-stage {
@@ -184,7 +231,7 @@
     #three-container {
       position: absolute;
       inset: 0;
-      z-index: 0;
+      z-index: 1;
       overflow: hidden;
     }
 
@@ -192,14 +239,14 @@
       width: 100% !important;
       height: 100% !important;
       display: block;
-      opacity: 0.94;
+      opacity: 0.9;
     }
 
     .hero-overlay {
       position: absolute;
       inset: 0;
-      z-index: 1;
-      background: rgba(255, 255, 255, 0.01);
+      z-index: 2;
+      background: radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.02) 58%);
     }
   </style>
 </head>
@@ -558,7 +605,7 @@
             ]
           },
           {
-            diffuse: 0x000000
+            diffuse: 0x2f2b35
           }
         );
 
